@@ -11,20 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Validate HTML
-        run: echo "Checking HTML structure..." && test -f index.html
+      - name: Validate files
+        run: |
+          test -f index.html
+          test -f script.js
+          test -f style.css
 
-      - name: Validate JS
-        run: node -v && echo "JavaScript file exists" && test -f script.js
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Validate CSS
-        run: test -f style.css
+      - name: Build Docker image
+        run: docker build -t weather-app .
 
-      - name: Lint check (basic simulation)
-        run: echo "No lint errors found"
-
-      - name: Build complete
-        run: echo "CI pipeline successful 🚀"
+      - name: Run Docker container (test)
+        run: docker run -d -p 8080:80 weather-app
